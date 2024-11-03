@@ -88,3 +88,55 @@ export const deleteUser = async (req, res, next) => {
     next(new CustomError(error.message || 'Failed to delete user', 400));
   }
 };
+
+// User Login
+export const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find the user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new CustomError('Invalid email or password', 401);
+    }
+
+    // Compare the provided password with the hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw new CustomError('Invalid email or password', 401);
+    }
+
+    // Store user information in session
+    req.session.userId = user._id; // Store user ID in the session
+    req.session.email = user.email; // Optionally store the email
+
+    // Return success response (excluding password)
+    res.status(200).json({
+      message: 'Login successful',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        image: user.image,
+      },
+    });
+  } catch (error) {
+    next(new CustomError(error.message || 'Failed to login', 400));
+  }
+};
+
+// User Logout
+export const logoutUser = (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return next(new CustomError('Failed to log out. Please try again.', 500));
+    }
+
+    // Clear the session cookie
+    res.clearCookie('connect.sid', { path: '/' });
+
+    // Send a success response
+    res.status(200).json({ message: 'Logout successful' });
+  });
+};
