@@ -14,13 +14,13 @@ import { authenticateUser } from '../middlewares/authMiddlewares.js';
 
 const usersRouter = Router();
 
-usersRouter.post(`/login`, loginUser);
-
-usersRouter.get(`/`, authenticateUser, getUsers);
 usersRouter.post(`/`, createUser);
-usersRouter.get(`/:id`, authenticateUser, getUserById);
-usersRouter.put(`/:id`, authenticateUser, updateUser);
-usersRouter.delete(`/:id`, authenticateUser, deleteUser);
+usersRouter.post(`/login`, loginUser);
+usersRouter.use(authenticateUser);
+usersRouter.get(`/`, getUsers);
+usersRouter.get(`/:id`, getUserById);
+usersRouter.put(`/:id`, updateUser);
+usersRouter.delete(`/:id`, deleteUser);
 usersRouter.post(`/logout`, logoutUser);
 
 export default usersRouter;
