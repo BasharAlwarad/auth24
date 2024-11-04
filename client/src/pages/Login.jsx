@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const Login = () => {
@@ -7,7 +7,26 @@ const Login = () => {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
 
-  // Handle form submission for login
+  // Check if user is logged in based on session
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/users/session`,
+          { withCredentials: true }
+        );
+        if (response.data.authenticated) {
+          setUser(response.data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        setUser(null);
+      }
+    };
+    checkSession();
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -23,7 +42,6 @@ const Login = () => {
     }
   };
 
-  // Handle logout
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -49,17 +67,18 @@ const Login = () => {
             <button onClick={handleLogout} className="w-full btn btn-primary">
               Logout
             </button>
+            {message && (
+              <div className="mt-4 shadow-lg alert alert-success">
+                <span>{message}</span>
+              </div>
+            )}
           </div>
         ) : (
           <form onSubmit={handleLogin} className="space-y-6">
             <h2 className="text-2xl font-semibold text-center">Login</h2>
 
             {message && (
-              <div
-                className={`alert ${
-                  user ? 'alert-success' : 'alert-error'
-                } shadow-lg`}
-              >
+              <div className="shadow-lg alert alert-error">
                 <span>{message}</span>
               </div>
             )}

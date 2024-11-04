@@ -5,7 +5,7 @@ export const auth = (req, res, next) => {
     return next();
   }
 
-  if (req.session.userId) {
+  if (req.session.user) {
     return next();
   }
   next(new CustomError('Unauthorized access', 401));

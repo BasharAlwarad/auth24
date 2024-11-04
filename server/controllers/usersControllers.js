@@ -1,6 +1,7 @@
 import User from '../models/usersModel.js';
 import { CustomError } from '../utils/errorHandler.js';
 import bcrypt from 'bcrypt';
+
 // Get all users
 export const getUsers = async (req, res, next) => {
   try {
@@ -29,19 +30,18 @@ export const createUser = async (req, res, next) => {
   try {
     const { name, email, password, role, image } = req.body;
 
-    // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       name,
       email,
-      password: hashedPassword, // Store the hashed password
+      password: hashedPassword,
       role,
       image,
     });
 
     await newUser.save();
-    res.status(201).json(newUser); // Password excluded automatically
+    res.status(201).json(newUser);
   } catch (error) {
     next(new CustomError(error.message || 'Failed to create user', 400));
   }
@@ -53,7 +53,6 @@ export const updateUser = async (req, res, next) => {
     const userId = req.params.id;
     const updates = req.body;
 
-    // Hash the new password if provided
     if (updates.password) {
       updates.password = await bcrypt.hash(updates.password, 10);
     }
@@ -67,7 +66,7 @@ export const updateUser = async (req, res, next) => {
       throw new CustomError('User not found', 404);
     }
 
-    res.status(200).json(updatedUser); // Password excluded automatically
+    res.status(200).json(updatedUser);
   } catch (error) {
     next(new CustomError(error.message || 'Failed to update user', 400));
   }
@@ -90,41 +89,6 @@ export const deleteUser = async (req, res, next) => {
 };
 
 // User Login
-// export const loginUser = async (req, res, next) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     // Find the user by email
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       throw new CustomError('Invalid email or password', 401);
-//     }
-
-//     // Compare the provided password with the hashed password
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       throw new CustomError('Invalid email or password', 401);
-//     }
-
-//     // Store user information in session
-//     req.session.userId = user._id; // Store user ID in the session
-
-//     // Return success response (excluding password)
-//     res.status(200).json({
-//       message: 'Login successful',
-//       user: {
-//         id: user._id,
-//         name: user.name,
-//         email: user.email,
-//         role: user.role,
-//         image: user.image,
-//       },
-//     });
-//   } catch (error) {
-//     next(new CustomError(error.message || 'Failed to login', 400));
-//   }
-// };
-
 export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -145,6 +109,8 @@ export const loginUser = async (req, res, next) => {
       role: user.role,
       email: user.email,
     };
+    req.session.userId = user._id;
+
     res
       .status(200)
       .json({ message: 'Login successful', user: req.session.user });
@@ -159,7 +125,16 @@ export const logoutUser = (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'Logout failed' });
     }
-    res.clearCookie('connect.sid'); // assuming you're using `connect.sid` as the session cookie name
+    res.clearCookie('connect.sid');
     res.status(200).json({ message: 'Logout successful' });
   });
+};
+
+export const checkSession = (req, res) => {
+  console.log(123);
+  if (req.session.user) {
+    res.json({ authenticated: true, user: req.session.user });
+  } else {
+    res.json({ authenticated: false });
+  }
 };
