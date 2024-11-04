@@ -108,7 +108,6 @@ export const loginUser = async (req, res, next) => {
 
     // Store user information in session
     req.session.userId = user._id; // Store user ID in the session
-    req.session.email = user.email; // Optionally store the email
 
     // Return success response (excluding password)
     res.status(200).json({
