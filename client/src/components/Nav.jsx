@@ -4,14 +4,14 @@ const Nav = () => {
   const activeLink = ({ isActive }) =>
     isActive ? 'btn btn-ghost text-primary font-bold' : 'btn btn-ghost';
   return (
-    <nav className="navbar bg-base-100 px-4">
+    <nav className="px-4 navbar bg-base-100">
       <div className="navbar-start">
         <NavLink to="/" className={activeLink}>
           Home
         </NavLink>
       </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
+      <div className="hidden navbar-center lg:flex">
+        <ul className="px-1 menu menu-horizontal">
           <li>
             <NavLink to="/products" className={activeLink}>
               Products
@@ -20,6 +20,11 @@ const Nav = () => {
           <li>
             <NavLink to="/orders" className={activeLink}>
               Orders
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/users" className={activeLink}>
+              Users
             </NavLink>
           </li>
         </ul>

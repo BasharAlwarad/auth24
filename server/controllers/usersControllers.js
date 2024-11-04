@@ -90,52 +90,76 @@ export const deleteUser = async (req, res, next) => {
 };
 
 // User Login
+// export const loginUser = async (req, res, next) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     // Find the user by email
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       throw new CustomError('Invalid email or password', 401);
+//     }
+
+//     // Compare the provided password with the hashed password
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       throw new CustomError('Invalid email or password', 401);
+//     }
+
+//     // Store user information in session
+//     req.session.userId = user._id; // Store user ID in the session
+
+//     // Return success response (excluding password)
+//     res.status(200).json({
+//       message: 'Login successful',
+//       user: {
+//         id: user._id,
+//         name: user.name,
+//         email: user.email,
+//         role: user.role,
+//         image: user.image,
+//       },
+//     });
+//   } catch (error) {
+//     next(new CustomError(error.message || 'Failed to login', 400));
+//   }
+// };
+
 export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    // Find the user by email
     const user = await User.findOne({ email });
+
     if (!user) {
       throw new CustomError('Invalid email or password', 401);
     }
 
-    // Compare the provided password with the hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       throw new CustomError('Invalid email or password', 401);
     }
 
-    // Store user information in session
-    req.session.userId = user._id; // Store user ID in the session
-
-    // Return success response (excluding password)
-    res.status(200).json({
-      message: 'Login successful',
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        image: user.image,
-      },
-    });
+    req.session.user = {
+      id: user._id,
+      name: user.name,
+      role: user.role,
+      email: user.email,
+    };
+    res
+      .status(200)
+      .json({ message: 'Login successful', user: req.session.user });
   } catch (error) {
-    next(new CustomError(error.message || 'Failed to login', 400));
+    next(error);
   }
 };
 
 // User Logout
-export const logoutUser = (req, res, next) => {
+export const logoutUser = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return next(new CustomError('Failed to log out. Please try again.', 500));
+      return res.status(500).json({ message: 'Logout failed' });
     }
-
-    // Clear the session cookie
-    res.clearCookie('connect.sid', { path: '/' });
-
-    // Send a success response
+    res.clearCookie('connect.sid'); // assuming you're using `connect.sid` as the session cookie name
     res.status(200).json({ message: 'Logout successful' });
   });
 };

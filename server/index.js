@@ -10,7 +10,11 @@ config();
 const PORT = process.env.PORT || 8080;
 
 const app = express();
-app.use(json(), cors(), authSession);
+app.use(
+  json(),
+  cors({ origin: 'http://localhost:5173', credentials: true }),
+  authSession
+);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Server is running!' });

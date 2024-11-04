@@ -1,6 +1,10 @@
 import { CustomError } from '../utils/errorHandler.js';
 
 export const auth = (req, res, next) => {
+  if (req.path === '/logout') {
+    return next();
+  }
+
   if (req.session.userId) {
     return next();
   }
