@@ -1,9 +1,10 @@
 import express, { json } from 'express';
 import { config } from 'dotenv';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
 import { errorHandler } from './utils/errorHandler.js';
 import usersRouter from './routes/usersRoutes.js';
-import { authSession } from './utils/session.js';
 import './db/mongoDB.js';
 
 config();
@@ -12,8 +13,8 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 app.use(
   json(),
-  cors({ origin: 'http://localhost:5173', credentials: true }),
-  authSession
+  cors({ origin: process.env.CLIENT_URL, credentials: true }),
+  cookieParser()
 );
 
 app.get('/', (req, res) => {

@@ -7,14 +7,18 @@ const Login = () => {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
 
-  // Check if user is logged in based on session
+  // Check if user is logged in based on JWT in cookies
   useEffect(() => {
     const checkSession = async () => {
       try {
         const response = await axios.get(
           `http://localhost:8080/api/v1/users/session`,
-          { withCredentials: true }
+          {
+            withCredentials: true, // Ensure cookies are sent
+          }
         );
+
+        // If the response indicates the user is authenticated, set the user state
         if (response.data.authenticated) {
           setUser(response.data.user);
         } else {
@@ -33,7 +37,7 @@ const Login = () => {
       const response = await axios.post(
         `http://localhost:8080/api/v1/users/login`,
         { email, password },
-        { withCredentials: true }
+        { withCredentials: true } // Set to send cookies with the request
       );
       setUser(response.data.user);
       setMessage('Login successful!');

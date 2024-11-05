@@ -26,7 +26,7 @@ const userSchema = new Schema(
     image: {
       type: String,
       default:
-        'https://img.freepik.com/free-vector/blank-user-circles_78370-4336.jpg?t=st=1730619736~exp=1730623336~hmac=30fb9e6e2b2fa0c8f1d7a2a66de13f0de464aedebb95b041e6e2603babe9c386&w=1380',
+        'https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg?t=st=1730732566~exp=1730736166~hmac=f00212fd96ce5c96daa11d1f0acc6dadb08153181ec840f3cbe9d87d594bd4b4&w=740',
     },
   },
   {
@@ -35,7 +35,7 @@ const userSchema = new Schema(
       virtuals: true,
       versionKey: false,
       transform: (doc, ret) => {
-        delete ret.password; // Exclude password
+        delete ret.password;
         return ret;
       },
     },
@@ -43,7 +43,7 @@ const userSchema = new Schema(
       virtuals: true,
       versionKey: false,
       transform: (doc, ret) => {
-        delete ret.password; // Exclude password
+        delete ret.password;
         return ret;
       },
     },

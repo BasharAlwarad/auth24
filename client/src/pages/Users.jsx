@@ -9,8 +9,9 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        // Cookies will be sent automatically; no need to manually set the token
         const response = await axios.get('http://localhost:8080/api/v1/users', {
-          withCredentials: true,
+          withCredentials: true, // Ensure cookies are sent with the request
         });
         setUsers(response.data);
       } catch (err) {

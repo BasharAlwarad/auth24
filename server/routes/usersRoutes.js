@@ -17,12 +17,11 @@ const usersRouter = Router();
 
 usersRouter.post(`/`, createUser);
 usersRouter.post(`/login`, loginUser);
-usersRouter.use(auth);
 usersRouter.post(`/logout`, logoutUser);
-usersRouter.get(`/session`, checkSession);
-usersRouter.get(`/`, getUsers);
-usersRouter.get(`/:id`, getUserById);
-usersRouter.put(`/:id`, updateUser);
-usersRouter.delete(`/:id`, deleteUser);
+usersRouter.get(`/session`, auth, checkSession);
+usersRouter.get(`/`, auth, getUsers);
+usersRouter.get(`/:id`, auth, getUserById);
+usersRouter.put(`/:id`, auth, updateUser);
+usersRouter.delete(`/:id`, auth, deleteUser);
 
 export default usersRouter;

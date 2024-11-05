@@ -1,5 +1,6 @@
 import User from '../models/usersModel.js';
 import { CustomError } from '../utils/errorHandler.js';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 // Get all users
@@ -103,17 +104,32 @@ export const loginUser = async (req, res, next) => {
       throw new CustomError('Invalid email or password', 401);
     }
 
-    req.session.user = {
-      id: user._id,
-      name: user.name,
-      role: user.role,
-      email: user.email,
-    };
-    req.session.userId = user._id;
+    const token = jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        role: user.role,
+        email: user.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
 
-    res
-      .status(200)
-      .json({ message: 'Login successful', user: req.session.user });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    res.status(200).json({
+      message: 'Login successful',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -121,19 +137,13 @@ export const loginUser = async (req, res, next) => {
 
 // User Logout
 export const logoutUser = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Logout failed' });
-    }
-    res.clearCookie('connect.sid');
-    res.status(200).json({ message: 'Logout successful' });
-  });
+  res.clearCookie('token');
+  res.status(200).json({ message: 'Logout successful' });
 };
 
 export const checkSession = (req, res) => {
-  console.log(123);
-  if (req.session.user) {
-    res.json({ authenticated: true, user: req.session.user });
+  if (req.user) {
+    res.json({ authenticated: true, user: req.user });
   } else {
     res.json({ authenticated: false });
   }
