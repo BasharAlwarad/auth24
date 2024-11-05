@@ -1,4 +1,5 @@
 import express, { json } from 'express';
+import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';
 import cors from 'cors';
 import { errorHandler } from './utils/errorHandler.js';
@@ -13,7 +14,8 @@ const app = express();
 app.use(
   json(),
   cors({ origin: 'http://localhost:5173', credentials: true }),
-  authSession
+  cookieParser()
+  // authSession
 );
 
 app.get('/', (req, res) => {

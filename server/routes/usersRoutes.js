@@ -20,7 +20,7 @@ usersRouter.post(`/login`, loginUser);
 usersRouter.use(auth);
 usersRouter.post(`/logout`, logoutUser);
 usersRouter.get(`/session`, checkSession);
-usersRouter.get(`/`, getUsers);
+usersRouter.get(`/`, auth, getUsers);
 usersRouter.get(`/:id`, getUserById);
 usersRouter.put(`/:id`, updateUser);
 usersRouter.delete(`/:id`, deleteUser);
