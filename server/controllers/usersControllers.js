@@ -1,4 +1,5 @@
 import User from '../models/usersModel.js';
+import multer from 'multer';
 import { CustomError } from '../utils/errorHandler.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -27,26 +28,53 @@ export const getUserById = async (req, res, next) => {
 };
 
 // Create a new user
-export const createUser = async (req, res, next) => {
-  try {
-    const { name, email, password, role, image } = req.body;
+const upload = multer({ storage: multer.memoryStorage() });
+export const createUser = [
+  upload.single('image'), // Use 'single' for a single file upload
+  async (req, res, next) => {
+    try {
+      const { name, email, password, role } = req.body;
+      const image = req.file; // Access the uploaded file as `req.file`
+      console.log(name, email, password, role, image);
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-      image,
-    });
+      const newUser = new User({
+        name,
+        email,
+        password: hashedPassword,
+        role,
+        image: undefined, // Store image data as Base64, if needed
+      });
 
-    await newUser.save();
-    res.status(201).json(newUser);
-  } catch (error) {
-    next(new CustomError(error.message || 'Failed to create user', 400));
-  }
-};
+      // await newUser.save();
+      res.status(201).json(newUser);
+    } catch (error) {
+      next(new CustomError(error.message || 'Failed to create user', 400));
+    }
+  },
+];
+// export const createUser = async (req, res, next) => {
+//   try {
+//     const { name, email, password, role, image } = req.body;
+//     console.log(name, email, password, role, image);
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     const newUser = new User({
+//       name,
+//       email,
+//       password: hashedPassword,
+//       role,
+//       image: image || undefined,
+//     });
+
+//     // await newUser.save();
+//     // res.status(201).json(newUser);
+//     res.status(201).json(newUser);
+//   } catch (error) {
+//     next(new CustomError(error.message || 'Failed to create user', 400));
+//   }
+// };
 
 // Update user by ID
 export const updateUser = async (req, res, next) => {
