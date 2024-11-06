@@ -44,7 +44,7 @@ export const createUser = [
         email,
         password: hashedPassword,
         role,
-        image: undefined, // Store image data as Base64, if needed
+        image: undefined, // Store image data as defaults for now
       });
 
       // await newUser.save();
