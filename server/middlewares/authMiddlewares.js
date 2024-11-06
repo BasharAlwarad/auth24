@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { CustomError } from '../utils/errorHandler.js';
+import Post from '../models/postsModel.js';
 
 export const auth = (req, res, next) => {
   const token = req.cookies.token;
@@ -14,6 +15,31 @@ export const auth = (req, res, next) => {
     next();
   } catch (error) {
     next(new CustomError('Invalid or expired token', 401));
+  }
+};
+
+export const owner = async (req, res, next) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.user.id; // Get user ID from authenticated request
+
+    // Find the post and check if the authenticated user is the owner
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return next(new CustomError('Post not found', 404));
+    }
+
+    // Check if the user owns the post
+    if (post.user.toString() !== userId) {
+      return next(
+        new CustomError('Unauthorized access: You do not own this post', 403)
+      );
+    }
+
+    next(); // User is authorized to proceed
+  } catch (error) {
+    next(new CustomError(error.message || 'Authorization failed', 500));
   }
 };
 

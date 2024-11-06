@@ -13,13 +13,8 @@ const Nav = () => {
       <div className="hidden navbar-center lg:flex">
         <ul className="px-1 menu menu-horizontal">
           <li>
-            <NavLink to="/products" className={activeLink}>
-              Products
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/orders" className={activeLink}>
-              Orders
+            <NavLink to="/posts" className={activeLink}>
+              Posts
             </NavLink>
           </li>
           <li>
