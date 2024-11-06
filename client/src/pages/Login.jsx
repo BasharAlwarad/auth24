@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
@@ -7,6 +8,8 @@ const Login = () => {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
 
+  const navigate = useNavigate();
+
   // Check if user is logged in based on JWT in cookies
   useEffect(() => {
     const checkSession = async () => {
@@ -14,11 +17,10 @@ const Login = () => {
         const response = await axios.get(
           `http://localhost:8080/api/v1/users/session`,
           {
-            withCredentials: true, // Ensure cookies are sent
+            withCredentials: true,
           }
         );
 
-        // If the response indicates the user is authenticated, set the user state
         if (response.data.authenticated) {
           setUser(response.data.user);
         } else {
@@ -37,10 +39,11 @@ const Login = () => {
       const response = await axios.post(
         `http://localhost:8080/api/v1/users/login`,
         { email, password },
-        { withCredentials: true } // Set to send cookies with the request
+        { withCredentials: true }
       );
       setUser(response.data.user);
       setMessage('Login successful!');
+      navigate('/posts'); // Navigate to /posts on successful login
     } catch (error) {
       setMessage(error.response?.data?.message || 'Login failed');
     }
@@ -118,6 +121,18 @@ const Login = () => {
             <button type="submit" className="w-full btn btn-primary">
               Login
             </button>
+
+            <div className="mt-4 text-center">
+              <span className="text-sm text-gray-500">
+                Do not have an account?
+              </span>
+              <button
+                onClick={() => navigate('/register')}
+                className="ml-2 text-blue-500 hover:underline"
+              >
+                Register
+              </button>
+            </div>
           </form>
         )}
       </div>

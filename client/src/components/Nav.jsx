@@ -7,7 +7,7 @@ const Nav = () => {
     <nav className="px-4 navbar bg-base-100">
       <div className="navbar-start">
         <NavLink to="/" className={activeLink}>
-          Home
+          🧩 Travel journal
         </NavLink>
       </div>
       <div className="hidden navbar-center lg:flex">
