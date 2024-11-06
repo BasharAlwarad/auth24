@@ -1,7 +1,7 @@
 import Login from './Login';
 import Home from './Home';
-import Products from './Products';
+import Posts from './Posts';
 import Orders from './Orders';
 import Users from './Users';
 
-export { Login, Products, Orders, Home, Users };
+export { Login, Posts, Orders, Home, Users };
