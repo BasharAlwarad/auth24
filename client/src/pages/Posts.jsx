@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -118,23 +119,31 @@ const Posts = () => {
               <p className="mt-2 text-sm text-gray-500">
                 Posted by: {post.user.name}
               </p>
-              <div className="flex justify-end mt-4 space-x-2">
-                <button
-                  onClick={() => {
-                    setText(post.text);
-                    setImage(post.image);
-                    setEditingPost(post._id);
-                  }}
-                  className="btn btn-outline btn-sm"
+              <div className="flex justify-between mt-4">
+                <Link
+                  to={`/posts/${post._id}`}
+                  className="text-blue-500 hover:underline"
                 >
-                  Edit
-                </button>
-                <button
-                  onClick={() => deletePost(post._id)}
-                  className="btn btn-error btn-sm"
-                >
-                  Delete
-                </button>
+                  Read More
+                </Link>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => {
+                      setText(post.text);
+                      setImage(post.image);
+                      setEditingPost(post._id);
+                    }}
+                    className="btn btn-outline btn-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deletePost(post._id)}
+                    className="btn btn-error btn-sm"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </li>
           ))}

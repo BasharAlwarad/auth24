@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { Nav, Footer } from './components';
-import { Home, Posts, Login, Users } from './pages';
+import { Home, Posts, PostDetail, Login, Users } from './pages';
 import { AuthProvider } from '@/contexts';
 
 function App() {
@@ -12,6 +12,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/users" element={<Users />} />
           <Route path="/posts" element={<Posts />} />
+          <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/login" element={<Login />} />
         </Routes>
         <Footer />

@@ -40,6 +40,7 @@ export const createPost = async (req, res, next) => {
       user: userId,
     });
 
+    console.log(newPost);
     await newPost.save();
 
     res.status(201).json({

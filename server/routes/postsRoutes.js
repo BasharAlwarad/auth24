@@ -13,10 +13,11 @@ const postsRouter = Router();
 
 postsRouter.use(auth);
 
-postsRouter.route('/').get(getPosts).post(createPost);
+postsRouter.get(`/`, getPosts);
+postsRouter.post(`/`, createPost);
 postsRouter.get('/user', getPostsByUser);
-
-postsRouter.use(owner);
-postsRouter.route('/:id').get(getPostById).patch(updatePost).delete(deletePost);
+postsRouter.get('/:id', getPostById);
+postsRouter.put(`/:id`, owner, updatePost);
+postsRouter.delete(`/:id`, owner, deletePost);
 
 export default postsRouter;

@@ -11,7 +11,7 @@ export const auth = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach decoded user data to request
+    req.user = decoded;
     next();
   } catch (error) {
     next(new CustomError('Invalid or expired token', 401));
@@ -21,9 +21,7 @@ export const auth = (req, res, next) => {
 export const owner = async (req, res, next) => {
   try {
     const postId = req.params.id;
-    const userId = req.user.id; // Get user ID from authenticated request
-
-    // Find the post and check if the authenticated user is the owner
+    const userId = req.user.id;
     const post = await Post.findById(postId);
 
     if (!post) {
@@ -37,7 +35,7 @@ export const owner = async (req, res, next) => {
       );
     }
 
-    next(); // User is authorized to proceed
+    next();
   } catch (error) {
     next(new CustomError(error.message || 'Authorization failed', 500));
   }
