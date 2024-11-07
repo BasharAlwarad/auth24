@@ -28,6 +28,6 @@ app.get('*', (req, res) => {
 });
 
 app.use(errorHandler);
-app.listen(PORT, () => {
+app.listen(PORT || 10000, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
