@@ -46,7 +46,6 @@ export const createUser = async (req, res, next) => {
       });
 
       blobStream.on('error', (err) => {
-        console.error('Upload error:', err); // Logs detailed error
         next(new CustomError('Image upload failed', 500));
       });
 
@@ -73,7 +72,6 @@ export const createUser = async (req, res, next) => {
 
       blobStream.end(image.buffer);
     } else {
-      // No image provided
       const newUser = new User({
         name,
         email,
@@ -83,49 +81,6 @@ export const createUser = async (req, res, next) => {
       await newUser.save();
       res.status(201).json(newUser);
     }
-
-    // if (image) {
-    //   const blob = bucket.file(`images/${Date.now()}_${image.originalname}`);
-
-    //   const blobStream = blob.createWriteStream({
-    //     metadata: { contentType: image.mimetype },
-    //   });
-
-    //   blobStream.on('error', (err) => {
-    //     console.error('Blob stream error:', err);
-    //     next(new CustomError('Image upload failed', 500));
-    //   });
-
-    //   blobStream.on('finish', async () => {
-    //     imageUrl = await blob.getSignedUrl({
-    //       action: 'read',
-    //       expires: '03-01-2500',
-    //     });
-
-    //     const newUser = new User({
-    //       name,
-    //       email,
-    //       password: hashedPassword,
-    //       role,
-    //       image: imageUrl[0],
-    //     });
-
-    //     await newUser.save();
-    //     res.status(201).json(newUser);
-    //   });
-
-    //   blobStream.end(image.buffer);
-    // } else {
-    //   const newUser = new User({
-    //     name,
-    //     email,
-    //     password: hashedPassword,
-    //     role,
-    //   });
-
-    //   await newUser.save();
-    //   res.status(201).json(newUser);
-    // }
   } catch (error) {
     next(new CustomError(error.message || 'Failed to create user', 400));
   }
