@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { CustomError } from '../utils/errorHandler.js';
-import Post from '../models/postsModel.js';
-
 import { JWT_SECRET } from '../config/config.js';
+
+import Post from '../models/postsModel.js';
 
 export const auth = (req, res, next) => {
   const token = req.cookies.token;
