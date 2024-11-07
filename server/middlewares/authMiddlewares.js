@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import { CustomError } from '../utils/errorHandler.js';
 import Post from '../models/postsModel.js';
 
+import { JWT_SECRET } from '../config/config.js';
+
 export const auth = (req, res, next) => {
   const token = req.cookies.token;
 
@@ -10,7 +12,7 @@ export const auth = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {

@@ -14,7 +14,6 @@ const Register = () => {
 
   const navigate = useNavigate();
 
-  // Trigger file input click when button is clicked
   const handleImageUploadClick = () => {
     document.getElementById('fileInput').click();
   };
@@ -23,8 +22,8 @@ const Register = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file); // Store the file to send in the request
-      setImagePreview(URL.createObjectURL(file)); // Create a preview URL
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -39,7 +38,7 @@ const Register = () => {
     formData.append('password', password);
     formData.append('role', role);
     if (image) {
-      formData.append('image', image); // Append the image file
+      formData.append('image', image);
     }
 
     try {
@@ -55,7 +54,6 @@ const Register = () => {
       setImage(null);
       setImagePreview('');
 
-      // Navigate to login page after successful registration
       navigate('/login');
     } catch (error) {
       setError(error.response?.data?.message || 'Failed to create user');
@@ -113,7 +111,7 @@ const Register = () => {
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          style={{ display: 'none' }} // Hide the file input
+          style={{ display: 'none' }}
         />
 
         {imagePreview && (

@@ -1,5 +1,4 @@
 import Post from '../models/postsModel.js';
-import User from '../models/usersModel.js';
 import { CustomError } from '../utils/errorHandler.js';
 
 // Get all posts

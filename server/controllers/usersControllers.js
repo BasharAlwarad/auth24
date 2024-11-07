@@ -1,8 +1,9 @@
-import User from '../models/usersModel.js';
-import multer from 'multer';
-import { CustomError } from '../utils/errorHandler.js';
 import jwt from 'jsonwebtoken';
+import { bucket } from '../config/firebase.js';
 import bcrypt from 'bcrypt';
+import User from '../models/usersModel.js';
+import { CustomError } from '../utils/errorHandler.js';
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/config.js';
 
 // Get all users
 export const getUsers = async (req, res, next) => {
@@ -27,54 +28,58 @@ export const getUserById = async (req, res, next) => {
   }
 };
 
-// Create a new user
-const upload = multer({ storage: multer.memoryStorage() });
-export const createUser = [
-  upload.single('image'), // Use 'single' for a single file upload
-  async (req, res, next) => {
-    try {
-      const { name, email, password, role } = req.body;
-      const image = req.file; // Access the uploaded file as `req.file`
-      console.log(name, email, password, role, image);
+// Create a new user with image upload
+export const createUser = async (req, res, next) => {
+  try {
+    const { name, email, password, role } = req.body;
+    const image = req.file;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+    let imageUrl;
+    if (image) {
+      const blob = bucket.file(`images/${Date.now()}_${image.originalname}`);
 
+      const blobStream = blob.createWriteStream({
+        metadata: { contentType: image.mimetype },
+      });
+
+      blobStream.on('error', (err) =>
+        next(new CustomError('Image upload failed', 500))
+      );
+      blobStream.on('finish', async () => {
+        imageUrl = await blob.getSignedUrl({
+          action: 'read',
+          expires: '03-01-2500',
+        });
+
+        const newUser = new User({
+          name,
+          email,
+          password: hashedPassword,
+          role,
+          image: imageUrl[0],
+        });
+
+        await newUser.save();
+        res.status(201).json(newUser);
+      });
+
+      blobStream.end(image.buffer);
+    } else {
       const newUser = new User({
         name,
         email,
         password: hashedPassword,
         role,
-        image: undefined, // Store image data as defaults for now
       });
 
-      // await newUser.save();
+      await newUser.save();
       res.status(201).json(newUser);
-    } catch (error) {
-      next(new CustomError(error.message || 'Failed to create user', 400));
     }
-  },
-];
-// export const createUser = async (req, res, next) => {
-//   try {
-//     const { name, email, password, role, image } = req.body;
-//     console.log(name, email, password, role, image);
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     const newUser = new User({
-//       name,
-//       email,
-//       password: hashedPassword,
-//       role,
-//       image: image || undefined,
-//     });
-
-//     // await newUser.save();
-//     // res.status(201).json(newUser);
-//     res.status(201).json(newUser);
-//   } catch (error) {
-//     next(new CustomError(error.message || 'Failed to create user', 400));
-//   }
-// };
+  } catch (error) {
+    next(new CustomError(error.message || 'Failed to create user', 400));
+  }
+};
 
 // Update user by ID
 export const updateUser = async (req, res, next) => {
@@ -139,14 +144,14 @@ export const loginUser = async (req, res, next) => {
         role: user.role,
         email: user.email,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES_IN }
     );
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set to true in production
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.status(200).json({

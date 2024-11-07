@@ -1,5 +1,4 @@
 import express, { json } from 'express';
-import { config } from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -8,13 +7,12 @@ import usersRouter from './routes/usersRoutes.js';
 import postsRouter from './routes/postsRoutes.js';
 import './db/mongoDB.js';
 
-config();
-const PORT = process.env.PORT || 8080;
+import { PORT, CLIENT_URL } from './config/config.js';
 
 const app = express();
 app.use(
   json(),
-  cors({ origin: process.env.CLIENT_URL, credentials: true }),
+  cors({ origin: CLIENT_URL, credentials: true }),
   cookieParser()
 );
 
