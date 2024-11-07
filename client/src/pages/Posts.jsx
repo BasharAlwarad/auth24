@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const Posts = () => {
+  const URL = import.meta.env.VITE_URL;
   const [posts, setPosts] = useState([]);
   const [text, setText] = useState('');
   const [image, setImage] = useState('');
@@ -13,7 +14,7 @@ const Posts = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8080/api/v1/posts`, {
+      const response = await axios.get(`${URL}/api/v1/posts`, {
         withCredentials: true,
       });
       setPosts(Array.isArray(response.data) ? response.data : []);
@@ -31,7 +32,7 @@ const Posts = () => {
   const createPost = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/v1/posts`,
+        `${URL}/api/v1/posts`,
         { text, image },
         { withCredentials: true }
       );
@@ -46,7 +47,7 @@ const Posts = () => {
   const updatePost = async (id) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/v1/posts/${id}`,
+        `${URL}/api/v1/posts/${id}`,
         { text, image },
         { withCredentials: true }
       );
@@ -61,7 +62,7 @@ const Posts = () => {
 
   const deletePost = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/posts/${id}`, {
+      await axios.delete(`${URL}/api/v1/posts/${id}`, {
         withCredentials: true,
       });
       setPosts(posts.filter((post) => post._id !== id));

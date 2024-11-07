@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Users = () => {
+  const URL = import.meta.env.VITE_URL;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,7 +11,7 @@ const Users = () => {
     const fetchUsers = async () => {
       try {
         // Cookies will be sent automatically; no need to manually set the token
-        const response = await axios.get('http://localhost:8080/api/v1/users', {
+        const response = await axios.get(`${URL}/api/v1/users`, {
           withCredentials: true, // Ensure cookies are sent with the request
         });
         setUsers(response.data);

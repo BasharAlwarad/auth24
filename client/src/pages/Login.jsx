@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
+  const URL = import.meta.env.VITE_URL;
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -14,12 +16,9 @@ const Login = () => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/users/session`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${URL}/api/v1/users/session`, {
+          withCredentials: true,
+        });
 
         if (response.data.authenticated) {
           setUser(response.data.user);
@@ -37,7 +36,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/v1/users/login`,
+        `${URL}/api/v1/users/login`,
         { email, password },
         { withCredentials: true }
       );
@@ -52,7 +51,7 @@ const Login = () => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        `http://localhost:8080/api/v1/users/logout`,
+        `${URL}/api/v1/users/logout`,
         {},
         { withCredentials: true }
       );

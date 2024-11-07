@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Register = () => {
+  const URL = import.meta.env.VITE_URL;
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +35,7 @@ const Register = () => {
     setSuccess('');
 
     const formData = new FormData();
+    const URL = import.meta.env.VITE_URL;
     formData.append('name', name);
     formData.append('email', email);
     formData.append('password', password);
@@ -42,7 +45,7 @@ const Register = () => {
     }
 
     try {
-      await axios.post('http://localhost:8080/api/v1/users', formData, {
+      await axios.post(`${URL}/api/v1/users`, formData, {
         withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' },
       });

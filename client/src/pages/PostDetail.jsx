@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const PostDetail = () => {
+  const URL = import.meta.env.VITE_URL;
+
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,12 +14,9 @@ const PostDetail = () => {
     const fetchPost = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/posts/${id}`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${URL}/api/v1/posts/${id}`, {
+          withCredentials: true,
+        });
         setPost(response.data);
       } catch (error) {
         setError(error.response?.data?.message || 'Failed to retrieve post');
