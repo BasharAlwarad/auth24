@@ -11,7 +11,7 @@ const Login = () => {
   const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
-
+  console.log('URL', URL);
   // Check if user is logged in based on JWT in cookies
   useEffect(() => {
     const checkSession = async () => {

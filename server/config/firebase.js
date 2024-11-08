@@ -19,15 +19,9 @@ const serviceAccount = {
   client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
 };
 
-console.log(process.env.FIREBASE_SERVICE_BUCKET_NAME);
-
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: process.env.FIREBASE_SERVICE_BUCKET_NAME, // Directly from .env
+  storageBucket: process.env.FIREBASE_SERVICE_BUCKET_NAME,
 });
-// admin.initializeApp({
-//   credential: admin.credential.cert(FIREBASE_SERVICE_ACCOUNT_FILE_NAME),
-//   storageBucket: FIREBASE_SERVICE_BUCKET_NAME,
-// });
 
 export const bucket = admin.storage().bucket();
