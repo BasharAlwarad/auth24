@@ -153,21 +153,21 @@ export const loginUser = async (req, res, next) => {
       { expiresIn: JWT_EXPIRES_IN }
     );
 
-    // res.cookie('token', token, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === 'production',
-    //   maxAge: 24 * 60 * 60 * 1000,
-    //   sameSite: 'none',
-    // });
-
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: 'none',
-      domain: 'travlejournal.netlify.app',
-      path: '/',
     });
+
+    // res.cookie('token', token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   maxAge: 24 * 60 * 60 * 1000,
+    //   sameSite: 'none',
+    //   domain: 'travlejournal.netlify.app',
+    //   path: '/',
+    // });
 
     res.status(200).json({
       message: 'Login successful',
