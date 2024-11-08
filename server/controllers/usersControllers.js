@@ -153,10 +153,16 @@ export const loginUser = async (req, res, next) => {
       { expiresIn: JWT_EXPIRES_IN }
     );
 
+    // res.cookie('token', token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   maxAge: 24 * 60 * 60 * 1000,
+    // });
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production', // Secure in production
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      sameSite: 'none', // Needed for cross-origin requests in production
     });
 
     res.status(200).json({
