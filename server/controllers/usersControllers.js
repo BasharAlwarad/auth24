@@ -157,12 +157,16 @@ export const loginUser = async (req, res, next) => {
     //   httpOnly: true,
     //   secure: process.env.NODE_ENV === 'production',
     //   maxAge: 24 * 60 * 60 * 1000,
+    //   sameSite: 'none',
     // });
+
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Secure in production
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-      sameSite: 'none', // Needed for cross-origin requests in production
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'none',
+      domain: 'travlejournal.netlify.app',
+      path: '/',
     });
 
     res.status(200).json({
