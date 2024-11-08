@@ -30,7 +30,6 @@ export const owner = async (req, res, next) => {
       return next(new CustomError('Post not found', 404));
     }
 
-    // Check if the user owns the post
     if (post.user.toString() !== userId) {
       return next(
         new CustomError('Unauthorized access: You do not own this post', 403)
