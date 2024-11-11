@@ -8,6 +8,7 @@ import postsRouter from './routes/postsRoutes.js';
 import './db/mongoDB.js';
 
 import { PORT, CLIENT_URL } from './config/config.js';
+console.log(CLIENT_URL);
 
 const app = express();
 app.use(
