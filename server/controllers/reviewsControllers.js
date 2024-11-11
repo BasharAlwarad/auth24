@@ -39,12 +39,14 @@ export const createReview = async (req, res, next) => {
     const postId = req.params.postId;
     const userId = req.user.id;
 
+    // Check if the post exists
     const post = await Post.findById(postId);
     if (!post) {
       throw new CustomError('Post not found', 404);
     }
 
-    const newReview = new Review({
+    // Create and save the new review
+    let newReview = new Review({
       text,
       user: userId,
       post: postId,
@@ -52,16 +54,51 @@ export const createReview = async (req, res, next) => {
 
     await newReview.save();
 
+    // Populate the user data on the saved review
+    newReview = await newReview.populate('user', 'name email');
+
+    // Send the response with populated user info
     res.status(201).json({
       text: newReview.text,
       _id: newReview._id,
-      user: req.user,
+      user: newReview.user, // User details like name and email
       post: postId,
     });
   } catch (error) {
     next(new CustomError(error.message || 'Failed to create review', 400));
   }
 };
+
+// // Create a new review for a post
+// export const createReview = async (req, res, next) => {
+//   try {
+//     const { text } = req.body;
+//     const postId = req.params.postId;
+//     const userId = req.user.id;
+
+//     const post = await Post.findById(postId);
+//     if (!post) {
+//       throw new CustomError('Post not found', 404);
+//     }
+
+//     const newReview = new Review({
+//       text,
+//       user: userId,
+//       post: postId,
+//     });
+
+//     await newReview.save();
+
+//     res.status(201).json({
+//       text: newReview.text,
+//       _id: newReview._id,
+//       user: req.user,
+//       post: postId,
+//     });
+//   } catch (error) {
+//     next(new CustomError(error.message || 'Failed to create review', 400));
+//   }
+// };
 
 // Update a review by ID
 export const updateReview = async (req, res, next) => {

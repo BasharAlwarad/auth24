@@ -10,6 +10,7 @@ const Posts = () => {
   const [editingPost, setEditingPost] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [user, setUser] = useState(null);
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -25,8 +26,20 @@ const Posts = () => {
     setLoading(false);
   };
 
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(`${URL}/api/v1/users/session`, {
+        withCredentials: true,
+      });
+      setUser(response.data.user);
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to fetch user');
+    }
+  };
+
   useEffect(() => {
     fetchPosts();
+    fetchUser();
   }, []);
 
   const createPost = async () => {
@@ -127,24 +140,26 @@ const Posts = () => {
                 >
                   Read More
                 </Link>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      setText(post.text);
-                      setImage(post.image);
-                      setEditingPost(post._id);
-                    }}
-                    className="btn btn-outline btn-sm"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deletePost(post._id)}
-                    className="btn btn-error btn-sm"
-                  >
-                    Delete
-                  </button>
-                </div>
+                {user && post.user._id === user.id && (
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => {
+                        setText(post.text);
+                        setImage(post.image);
+                        setEditingPost(post._id);
+                      }}
+                      className="btn btn-outline btn-sm"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deletePost(post._id)}
+                      className="btn btn-error btn-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </li>
           ))}
