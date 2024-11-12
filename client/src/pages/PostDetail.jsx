@@ -6,7 +6,6 @@ import { useAuthContext } from '../contexts/userContext';
 const PostDetail = () => {
   const URL = import.meta.env.VITE_URL;
   const { user } = useAuthContext();
-  console.log(user);
 
   const { id } = useParams();
   const [post, setPost] = useState(null);
@@ -48,7 +47,6 @@ const PostDetail = () => {
         { text: newReviewText },
         { withCredentials: true }
       );
-      console.log(response.data);
       setReviews([...reviews, response.data]);
       setNewReviewText('');
     } catch (error) {
@@ -83,6 +81,10 @@ const PostDetail = () => {
       setError(error.response?.data?.message || 'Failed to delete review');
     }
   };
+
+  const hasUserReviewed = reviews.some(
+    (review) => review.user._id === user?.id
+  );
 
   if (loading) return <p>Loading post details...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -145,22 +147,24 @@ const PostDetail = () => {
             ))}
           </ul>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold">Add a Review</h3>
-            <textarea
-              value={newReviewText}
-              onChange={(e) => setNewReviewText(e.target.value)}
-              className="w-full p-2 mt-2 border rounded"
-              rows="3"
-              placeholder="Write your review..."
-            ></textarea>
-            <button
-              onClick={handleAddReview}
-              className="px-4 py-2 mt-2 text-white bg-green-500 rounded"
-            >
-              Submit
-            </button>
-          </div>
+          {!hasUserReviewed && (
+            <div className="mt-4">
+              <h3 className="text-xl font-semibold">Add a Review</h3>
+              <textarea
+                value={newReviewText}
+                onChange={(e) => setNewReviewText(e.target.value)}
+                className="w-full p-2 mt-2 border rounded"
+                rows="3"
+                placeholder="Write your review..."
+              ></textarea>
+              <button
+                onClick={handleAddReview}
+                className="px-4 py-2 mt-2 text-white bg-green-500 rounded"
+              >
+                Submit
+              </button>
+            </div>
+          )}
         </>
       ) : (
         <p className="text-center text-gray-500">Post not found.</p>
