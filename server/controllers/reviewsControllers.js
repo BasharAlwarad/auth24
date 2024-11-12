@@ -45,6 +45,12 @@ export const createReview = async (req, res, next) => {
       throw new CustomError('Post not found', 404);
     }
 
+    // Check if the user has already posted a review for this post
+    const existingReview = await Review.findOne({ post: postId, user: userId });
+    if (existingReview) {
+      throw new CustomError('You have already reviewed this post', 400);
+    }
+
     // Create and save the new review
     let newReview = new Review({
       text,
@@ -68,37 +74,6 @@ export const createReview = async (req, res, next) => {
     next(new CustomError(error.message || 'Failed to create review', 400));
   }
 };
-
-// // Create a new review for a post
-// export const createReview = async (req, res, next) => {
-//   try {
-//     const { text } = req.body;
-//     const postId = req.params.postId;
-//     const userId = req.user.id;
-
-//     const post = await Post.findById(postId);
-//     if (!post) {
-//       throw new CustomError('Post not found', 404);
-//     }
-
-//     const newReview = new Review({
-//       text,
-//       user: userId,
-//       post: postId,
-//     });
-
-//     await newReview.save();
-
-//     res.status(201).json({
-//       text: newReview.text,
-//       _id: newReview._id,
-//       user: req.user,
-//       post: postId,
-//     });
-//   } catch (error) {
-//     next(new CustomError(error.message || 'Failed to create review', 400));
-//   }
-// };
 
 // Update a review by ID
 export const updateReview = async (req, res, next) => {
