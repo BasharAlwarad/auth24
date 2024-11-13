@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 app.use(`/api/v1/users`, usersRouter);
 app.use(`/api/v1/posts`, postsRouter);
 app.use(`/api/v1/reviews`, reviewsRouter);
-app.use('/api/v1/chat/completions', validateProvider, validateMode, chatRouter);
+app.use('/api/v1/chat/completions', validateMode, chatRouter);
 app.use(
   '/api/v1/images/generations',
   validateProvider,

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthContext } from '../contexts/userContext';
+import AIReviewButton from '../components/AIReviewButton';
 
 const PostDetail = () => {
   const URL = import.meta.env.VITE_URL;
@@ -165,6 +166,8 @@ const PostDetail = () => {
               </button>
             </div>
           )}
+
+          <AIReviewButton postId={id} />
         </>
       ) : (
         <p className="text-center text-gray-500">Post not found.</p>

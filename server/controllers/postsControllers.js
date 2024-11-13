@@ -14,7 +14,7 @@ export const getPosts = async (req, res, next) => {
 // Get post by ID
 export const getPostById = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.id).populate(
+    const post = await Post.findById(req.params.postId).populate(
       'user',
       'name email'
     );
@@ -39,7 +39,6 @@ export const createPost = async (req, res, next) => {
       user: userId,
     });
 
-    console.log(newPost);
     await newPost.save();
 
     res.status(201).json({
@@ -56,7 +55,7 @@ export const createPost = async (req, res, next) => {
 // Update post by ID
 export const updatePost = async (req, res, next) => {
   try {
-    const postId = req.params.id;
+    const postId = req.params.postId;
     const updates = req.body;
 
     const updatedPost = await Post.findByIdAndUpdate(postId, updates, {
@@ -77,7 +76,7 @@ export const updatePost = async (req, res, next) => {
 // Delete post by ID
 export const deletePost = async (req, res, next) => {
   try {
-    const postId = req.params.id;
+    const postId = req.params.postId;
     const deletedPost = await Post.findByIdAndDelete(postId);
     if (!deletedPost) {
       throw new CustomError('Post not found', 404);

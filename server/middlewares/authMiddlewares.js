@@ -6,7 +6,6 @@ import Post from '../models/postsModel.js';
 
 export const auth = (req, res, next) => {
   const token = req.cookies.token;
-
   if (!token) {
     return next(new CustomError('Unauthorized access', 401));
   }
@@ -22,7 +21,7 @@ export const auth = (req, res, next) => {
 
 export const owner = async (req, res, next) => {
   try {
-    const postId = req.params.id;
+    const postId = req.params.postId;
     const userId = req.user.id;
     const post = await Post.findById(postId);
 

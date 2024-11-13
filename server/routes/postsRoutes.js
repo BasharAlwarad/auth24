@@ -16,8 +16,8 @@ postsRouter.use(auth);
 postsRouter.get(`/`, getPosts);
 postsRouter.post(`/`, createPost);
 postsRouter.get('/user', getPostsByUser);
-postsRouter.get('/:id', getPostById);
-postsRouter.put(`/:id`, owner, updatePost);
-postsRouter.delete(`/:id`, owner, deletePost);
+postsRouter.get('/:postId', getPostById);
+postsRouter.put(`/:postId`, owner, updatePost);
+postsRouter.delete(`/:postId`, owner, deletePost);
 
 export default postsRouter;
